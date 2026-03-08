@@ -1,0 +1,77 @@
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: #344154;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.profile-section {
+  text-align: center;
+  padding: 30px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.avatar {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.menu-item {
+  padding: 15px 25px;
+  color: #adb5bd;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: block;
+}
+
+.menu-item:hover, .menu-item.active {
+  background-color: #2c3748;
+  color: white;
+  border-left: 4px solid #17a2b8;
+}
+
+/* Logout Button Styling */
+.logout-btn {
+  margin-top: auto;
+  margin: 20px;
+  padding: 12px 20px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-btn:hover:not(:disabled) {
+  background-color: #c82333;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+  transform: translateY(-2px);
+}
+
+.logout-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+}
+
+.logout-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
