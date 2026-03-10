@@ -16,12 +16,18 @@ const SlipVerificationPage = () => {
   const fetchPendingBookings = async () => {
     try {
       const token = localStorage.getItem('token');
-      // ดึงรายการที่ status = 'waiting_admin_verify'
-      // ** อย่าลืมสร้าง Route GET ใน Backend สำหรับดึงเฉพาะสถานะนี้ด้วยนะครับ **
       const res = await axios.get(`${API_URL}/admin/pending-verify`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setBookings(res.data);
+      
+      // ตรวจสอบโครงสร้างข้อมูล (รองรับทั้ง res.data.data และ res.data เป็น array)
+      if (res.data.success && Array.isArray(res.data.data)) {
+        setBookings(res.data.data);
+      } else if (Array.isArray(res.data)) {
+        setBookings(res.data);
+      } else {
+        setBookings([]);
+      }
     } catch (err) {
       console.error("Fetch Error:", err);
       alert("ไม่สามารถดึงข้อมูลได้: " + (err.response?.data?.message || err.message));
