@@ -1,22 +1,18 @@
 .sidebar {
-  width: 260px;
+  width: 280px;
   min-height: 100vh;
   background-color: #344154;
   color: white;
   display: flex;
   flex-direction: column;
   position: relative;
+  box-shadow: 4px 0 10px rgba(0,0,0,0.1);
 }
 
 .profile-section {
   text-align: center;
-  padding: 30px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.avatar {
-  font-size: 40px;
-  margin-bottom: 10px;
+  padding: 40px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .menu-list {
@@ -26,18 +22,24 @@
 }
 
 .menu-item {
-  padding: 15px 25px;
+  padding: 16px 25px;
   color: #adb5bd;
   text-decoration: none;
-  font-size: 14px;
-  transition: all 0.3s;
-  display: block;
+  font-size: 15px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
 }
 
-.menu-item:hover, .menu-item.active {
-  background-color: #2c3748;
+.menu-item:hover {
+  background-color: rgba(255,255,255,0.05);
   color: white;
-  border-left: 4px solid #17a2b8;
+}
+
+.menu-item.active {
+  background-color: #1e293b;
+  color: white;
+  border-left: 4px solid #0ea5e9;
 }
 
 /* Logout Button Styling */
