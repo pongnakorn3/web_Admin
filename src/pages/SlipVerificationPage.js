@@ -24,6 +24,7 @@ const SlipVerificationPage = () => {
       setBookings(res.data);
     } catch (err) {
       console.error("Fetch Error:", err);
+      alert("ไม่สามารถดึงข้อมูลได้: " + (err.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }
