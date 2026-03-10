@@ -1,98 +1,88 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import API_BASE_URL from '../configs/api';
 
-const WithdrawRequestPage = () => {
-  const [requests, setRequests] = useState([]);
+const DisputePage = () => {
+  const [disputes, setDisputes] = useState([]);
   const [loading, setLoading] = useState(true);
-  // URL หลังบ้านของคุณ
-  const API_URL = "https://finalrental.onrender.com/api/money";
+  const API_URL = `${API_BASE_URL}/admin/disputes`;
+
 
   useEffect(() => {
-    fetchWithdrawRequests();
+    fetchDisputes();
   }, []);
 
-  const fetchWithdrawRequests = async () => {
+  const fetchDisputes = async () => {
     try {
       const token = localStorage.getItem('token');
-      // หมายเหตุ: คุณต้องเช็คว่าหลังบ้านมี Route สำหรับดึงรายการที่ status = 'pending' หรือยัง
-      const res = await axios.get(`${API_URL}/admin/withdrawals/pending`, {
+      const res = await axios.get(API_URL, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // สมมติว่า res.data ส่งกลับมาเป็น array ของรายการถอน
-      setRequests(res.data);
+      if (res.data.success) {
+        setDisputes(res.data.disputes);
+      }
     } catch (err) {
-      console.error("Fetch Withdraw Error:", err);
+      console.error("Fetch Dispute Error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleApprove = async (wid) => {
-    const adminNote = window.prompt("ระบุหมายเหตุการโอน (เช่น โอนเรียบร้อย):");
-    const slipUrl = window.prompt("วาง URL รูปหลักฐานการโอน (Transfer Slip URL):");
-
-    if (!slipUrl) {
-      alert("กรุณาใส่ URL รูปสลิปเพื่อยืนยันการโอน");
-      return;
-    }
-
+  const handleDecide = async (id, decision) => {
     try {
       const token = localStorage.getItem('token');
-      // เรียกใช้ approveWithdraw: router.put('/admin/approve', ...)
-      const res = await axios.put(`${API_URL}/admin/approve`, 
-        { 
-          withdrawal_id: wid,     // ตรงตาม Controller
-          admin_note: adminNote,   // ตรงตาม Controller
-          transfer_slip_url: slipUrl // ตรงตาม Controller
-        },
+      const res = await axios.patch(`${API_URL}/${id}/decide`, 
+        { decision: decision },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (res.data.success) {
-        alert("อนุมัติการถอนเงินเรียบร้อย!");
-        fetchWithdrawRequests(); // รีโหลดข้อมูลในตาราง
+        alert("ตัดสินเรียบร้อย!");
+        fetchDisputes();
       }
     } catch (err) {
-      alert("เกิดข้อผิดพลาด: " + (err.response?.data?.error || err.message));
+      alert("เกิดข้อผิดพลาด: " + (err.response?.data?.message || err.message));
     }
   };
 
-  if (loading) return <div style={{ padding: '20px' }}>กำลังโหลดคำร้องขอถอนเงิน...</div>;
+  if (loading) return <div style={{ padding: '20px' }}>กำลังโหลดข้อพิพาท...</div>;
 
   return (
     <div className="withdraw-container">
-      <h2>รายการคำร้องขอถอนเงิน</h2>
+      <h2>จัดการข้อพิพาท</h2>
       <div className="table-card" style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
         <table width="100%" style={{ borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ textAlign: 'left', borderBottom: '2px solid #f0f0f0' }}>
               <th style={{ padding: '12px' }}>ID</th>
-              <th>จำนวนเงิน</th>
+              <th>เหตุผล</th>
               <th>สถานะ</th>
               <th>ดำเนินการ</th>
             </tr>
           </thead>
           <tbody>
-            {requests.length > 0 ? requests.map(req => (
-              <tr key={req.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                <td style={{ padding: '12px' }}>#{req.id}</td>
-                <td style={{ color: '#2ecc71', fontWeight: 'bold' }}>฿{parseFloat(req.amount).toLocaleString()}</td>
-                <td>
-                  <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 8px', borderRadius: '4px', fontSize: '12px' }}>
-                    {req.status}
-                  </span>
-                </td>
+            {disputes.length > 0 ? disputes.map(d => (
+              <tr key={d.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                <td style={{ padding: '12px' }}>#{d.id}</td>
+                <td>{d.reason}</td>
+                <td>{d.status}</td>
                 <td>
                   <button 
-                    onClick={() => handleApprove(req.id)}
-                    style={{ background: '#22c55e', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }}
+                    onClick={() => handleDecide(d.id, 'refund')}
+                    style={{ background: '#22c55e', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
                   >
-                    ยืนยันการโอนเงิน
+                    Refund
+                  </button>
+                  <button 
+                    onClick={() => handleDecide(d.id, 'reject')}
+                    style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }}
+                  >
+                    Reject
                   </button>
                 </td>
               </tr>
             )) : (
-              <tr><td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: '#888' }}>ไม่มีรายการถอนเงินที่ค้างอยู่</td></tr>
+              <tr><td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: '#888' }}>ไม่มีรายการข้อพิพาท</td></tr>
             )}
           </tbody>
         </table>
@@ -101,4 +91,4 @@ const WithdrawRequestPage = () => {
   );
 };
 
-export default WithdrawRequestPage;
+export default DisputePage;

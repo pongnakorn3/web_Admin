@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import API_BASE_URL from '../configs/api';
 
 const SlipVerificationPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // URL API ตามที่คุณระบุ (ปรับ Path ให้ตรงกับ Router ของคุณ)
-  const API_URL = "https://finalrental.onrender.com/api/payments"; 
+  const API_URL = `${API_BASE_URL}/payments`; 
+
 
   useEffect(() => {
     fetchPendingBookings();
