@@ -28,6 +28,10 @@ const SlipVerificationPage = () => {
       }
     } catch (err) {
       console.error("Fetch Error:", err);
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        setBookings([]); // Clear to show empty or error
+        alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้ หรือ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่ด้วยบัญชี Admin");
+      }
     } finally {
       setLoading(false);
     }
@@ -113,7 +117,7 @@ const SlipVerificationPage = () => {
             {/* Slip Preview */}
             <div style={{ marginBottom: '24px', borderRadius: '12px', overflow: 'hidden' }}>
               <img 
-                src={b.slip_image?.startsWith('http') ? b.slip_image : `https://finalrental.onrender.com/${b.slip_image}`} 
+                src={b.slip_image?.startsWith('http') || b.slip_image?.startsWith('data:image') ? b.slip_image : `https://finalrental.onrender.com/${b.slip_image}`} 
                 alt="Payment Slip"
                 style={{ width: '100%', maxHeight: '400px', objectFit: 'contain', backgroundColor: '#F9FAFB', border: '1px solid #F3F4F6' }}
               />
