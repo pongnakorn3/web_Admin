@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import API_BASE_URL from '../configs/api';
+import './SlipVerificationPage.css'; // อย่าลืมนำเข้า CSS นะครับ
 
 const SlipVerificationPage = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   
   const API_URL = `${API_BASE_URL}/payments`; 
-
 
   useEffect(() => {
     fetchPendingBookings();
@@ -20,7 +20,6 @@ const SlipVerificationPage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // ตรวจสอบโครงสร้างข้อมูล (รองรับทั้ง res.data.data และ res.data เป็น array)
       if (res.data.success && Array.isArray(res.data.data)) {
         setBookings(res.data.data);
       } else if (Array.isArray(res.data)) {
@@ -42,9 +41,8 @@ const SlipVerificationPage = () => {
 
     try {
       const token = localStorage.getItem('token');
-      // เรียกใช้ adminVerifyPayment: router.put('/:id/admin-verify', ...)
       const res = await axios.put(`${API_URL}/${id}/admin-verify`, 
-        { approve: isApprove }, // ส่งค่าเป็น boolean ตาม Controller
+        { approve: isApprove },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -55,57 +53,73 @@ const SlipVerificationPage = () => {
     }
   };
 
-  if (loading) return <div style={{ padding: '20px' }}>กำลังโหลดข้อมูลสลิป...</div>;
+  if (loading) return <div className="loading-state">กำลังโหลดข้อมูลสลิป...</div>;
 
   return (
-    <div className="admin-page">
-      <h1>ตรวจสอบสลิปการชำระเงิน</h1>
-      <div className="table-card" style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-        <table width="100%" style={{ borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ textAlign: 'left', borderBottom: '2px solid #f0f0f0' }}>
-              <th style={{ padding: '12px' }}>หลักฐาน (Slip)</th>
-              <th>Booking ID</th>
-              <th>สถานะปัจจุบัน</th>
-              <th>การจัดการ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.length > 0 ? bookings.map(b => (
-              <tr key={b.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                <td style={{ padding: '12px' }}>
-                  <a href={`https://finalrental.onrender.com/${b.slip_image}`} target="_blank" rel="noreferrer">
-                    <img 
-                      src={`https://finalrental.onrender.com/${b.slip_image}`} 
-                      alt="Payment Slip" 
-                      style={{ width: '100px', height: 'auto', borderRadius: '4px', border: '1px solid #ddd' }}
-                    />
-                  </a>
-                </td>
-                <td><strong>#{b.id}</strong></td>
-                <td>
-                   <span style={{ color: '#f39c12', fontWeight: 'bold' }}>{b.status}</span>
-                </td>
-                <td>
-                  <button 
-                    onClick={() => handleVerify(b.id, true)}
-                    style={{ background: '#22c55e', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
-                  >
-                    อนุมัติ (Paid)
-                  </button>
-                  <button 
-                    onClick={() => handleVerify(b.id, false)}
-                    style={{ background: '#ef4444', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
-                  >
-                    ปฏิเสธ
-                  </button>
-                </td>
-              </tr>
-            )) : (
-              <tr><td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: '#666' }}>ไม่มีรายการรอตรวจสอบสลิป</td></tr>
-            )}
-          </tbody>
-        </table>
+    <div className="slip-page-container">
+      <div className="main-content-card">
+        <h2 className="page-title">ตรวจสอบสลิป</h2>
+        <p className="item-count">รายการตรวจสอบ: <strong>{bookings.length} รายการ</strong></p>
+
+        <div className="slip-grid">
+          {bookings.length > 0 ? bookings.map(b => (
+            <div className="slip-card" key={b.id}>
+              
+              {/* ส่วนข้อมูลผู้ใช้ */}
+              <div className="user-info-section">
+                <img 
+                  src="https://ui-avatars.com/api/?name=User&background=random" 
+                  alt="avatar" 
+                  className="user-avatar" 
+                />
+                <div className="user-details">
+                  {/* ถ้า API มีชื่อ/อีเมลส่งมาด้วย ให้แก้ b.user_name เป็นชื่อฟิลด์จริงได้เลยครับ */}
+                  <span className="user-name">{b.user_name || `Booking ID: #${b.id}`}</span>
+                  <span className="user-email">{b.user_email || `สถานะ: ${b.status}`}</span>
+                </div>
+              </div>
+
+              {/* ส่วนยอดเงิน */}
+              <div className="amount-section">
+                <div className="amount-icon-bg">
+                  <span className="baht-icon">฿</span>
+                </div>
+                {/* ถ้า API มียอดเงินส่งมาด้วย ให้แก้ b.amount ได้เลย */}
+                <span className="amount-text">ยอดเงินโอน <strong>{b.amount || '---'}</strong> บาท</span>
+              </div>
+
+              {/* ส่วนรูปสลิป */}
+              <div className="slip-image-wrapper">
+                <a href={`https://finalrental.onrender.com/${b.slip_image}`} target="_blank" rel="noreferrer">
+                  <img 
+                    src={`https://finalrental.onrender.com/${b.slip_image}`} 
+                    alt="Payment Slip" 
+                    className="slip-image"
+                  />
+                </a>
+              </div>
+
+              {/* ส่วนปุ่มดำเนินการ */}
+              <div className="action-buttons">
+                <button 
+                  className="btn-approve" 
+                  onClick={() => handleVerify(b.id, true)}
+                >
+                  อนุมัติ
+                </button>
+                <button 
+                  className="btn-reject" 
+                  onClick={() => handleVerify(b.id, false)}
+                >
+                  ปฏิเสธ
+                </button>
+              </div>
+
+            </div>
+          )) : (
+            <div className="empty-state">ไม่มีรายการรอตรวจสอบสลิป</div>
+          )}
+        </div>
       </div>
     </div>
   );

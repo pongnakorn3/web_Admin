@@ -1,0 +1,55 @@
+.dispute-page-container{
+  padding:30px;
+  min-height:100vh;
+  font-family:'Bai Jamjuree',sans-serif;
+  flex:1;
+}
+
+/* card list */
+.chat-list-card{
+  background:white;
+  border-radius:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+  overflow:hidden;
+  max-width:800px;
+}
+
+.chat-list-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:20px;
+  border-bottom:1px solid #eee;
+}
+
+.chat-list-item{
+  display:flex;
+  align-items:center;
+  padding:15px 20px;
+  border-bottom:1px solid #f0f0f0;
+  cursor:pointer;
+}
+
+.chat-list-item:hover{
+  background:#f7f7f7;
+}
+
+.chat-avatar img{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+}
+
+.chat-preview{
+  margin-left:15px;
+  flex:1;
+}
+
+.chat-name{
+  font-weight:500;
+}
+
+.chat-preview-text{
+  font-size:14px;
+  color:#666;
+}

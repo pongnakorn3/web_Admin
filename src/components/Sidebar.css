@@ -1,77 +1,140 @@
-.sidebar {
-  width: 260px;
-  min-height: 100vh;
-  background-color: #344154;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+
+.sidebar{
+  width:260px;
+  height:100vh;
+  background:#3f4c66;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  padding-top:20px;
+  font-family: 'Bai Jamjuree', sans-serif; 
 }
 
-.profile-section {
-  text-align: center;
-  padding: 30px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+/* profile */
+
+.profile-section{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:22px 20px;
 }
 
-.avatar {
-  font-size: 40px;
-  margin-bottom: 10px;
+.profile-icon{
+  font-size:60px;   
+  color:white;
 }
 
-.menu-list {
-  display: flex;
-  flex-direction: column;
-  padding-top: 10px;
+.admin-name{
+  font-size:22px;   
+  font-weight:500;
+  color:white;      
+  margin:0;
 }
 
-.menu-item {
-  padding: 15px 25px;
-  color: #adb5bd;
-  text-decoration: none;
-  font-size: 14px;
-  transition: all 0.3s;
-  display: block;
+/* menu */
+
+.menu-list{
+  display:flex;
+  flex-direction:column;
+  margin-top:10px;
 }
 
-.menu-item:hover, .menu-item.active {
-  background-color: #2c3748;
-  color: white;
-  border-left: 4px solid #17a2b8;
+.menu-item{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 20px;
+  color:white;
+  text-decoration:none;
+  font-size:15px;
+  transition:0.2s;
 }
 
-/* Logout Button Styling */
-.logout-btn {
-  margin-top: auto;
-  margin: 20px;
-  padding: 12px 20px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.menu-item:hover{
+  background:rgba(255,255,255,0.08);
 }
 
-.logout-btn:hover:not(:disabled) {
-  background-color: #c82333;
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
-  transform: translateY(-2px);
+.menu-icon{
+  font-size:18px;
 }
 
-.logout-btn:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+/* active */
+
+.menu-item.active{
+  background:#0f7a8a;
 }
 
-.logout-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+/* logout */
+
+/* logout modal */
+
+.logout-modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,0.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.logout-modal-box{
+  background:white;
+  width:420px;
+  padding:30px;
+  border-radius:10px;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+.logout-modal-title{
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+.logout-modal-desc{
+  color:#555;
+  margin-bottom:25px;
+}
+
+.logout-modal-actions{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+}
+
+.logout-modal-btn{
+  padding:10px 25px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-family:inherit;
+}
+
+.logout-modal-btn.cancel{
+  background:#e5e7eb;
+}
+
+.logout-modal-btn.confirm{
+  background:#CA3A3A;
+  color:white;
+}
+
+button.menu-item.logout-btn {
+  background-color: transparent; 
+  border: none; 
+  color: white; 
+  width: 100%; 
+  text-align: left; 
+  font-family: inherit; 
+  cursor: pointer; 
+  padding: 15px 20px; 
+}
+
+button.menu-item.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1); 
 }

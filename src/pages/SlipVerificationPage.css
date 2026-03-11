@@ -1,0 +1,116 @@
+.slip-page-container{
+  padding:30px;
+  min-height:100vh;
+  font-family:'Bai Jamjuree',sans-serif;
+  box-sizing:border-box;
+  flex:1;
+}
+
+/* กล่องเนื้อหาหลัก */
+.main-content-card{
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.page-title{
+  margin:0 0 15px 0;
+  font-size:24px;
+  font-weight:600;
+}
+
+.item-count{
+  margin-bottom:25px;
+  color:#555;
+}
+
+/* grid */
+.slip-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+}
+
+/* card */
+.slip-card{
+  width:100%;
+  max-width:350px;
+  border:1px solid #eee;
+  border-radius:8px;
+  padding:15px;
+  background:white;
+}
+
+.user-info-section{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:15px;
+}
+
+.user-avatar{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.user-name{
+  font-weight:500;
+}
+
+.user-email{
+  font-size:13px;
+  color:#666;
+}
+
+.amount-section{
+  display:flex;
+  gap:10px;
+  padding:10px 0;
+  border-top:1px solid #eee;
+  border-bottom:1px solid #eee;
+  margin-bottom:15px;
+}
+
+.slip-image-wrapper{
+  height:200px;
+  background:#f7f7f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:6px;
+  margin-bottom:15px;
+}
+
+.slip-image{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.action-buttons{
+  display:flex;
+  gap:10px;
+}
+
+.btn-approve{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:6px;
+  background:#059669;
+  color:white;
+  cursor:pointer;
+}
+
+.btn-reject{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:6px;
+  background:#CA3A3A;
+  color:white;
+  cursor:pointer;
+}

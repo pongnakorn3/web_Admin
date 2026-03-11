@@ -82,13 +82,13 @@ const VerifyPage = () => {
                 <td>
                   <button 
                     onClick={() => handleDecision(user.id, 'approved')}
-                    style={{ background: '#22c55e', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
+                    style={{ background: '#199474', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
                   >
                     อนุมัติ
                   </button>
                   <button 
                     onClick={() => handleDecision(user.id, 'rejected')}
-                    style={{ background: '#ef4444', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
+                    style={{ background: '#CA3A3A', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
                   >
                     ปฏิเสธ
                   </button>
