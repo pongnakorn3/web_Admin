@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // เพิ่ม useCallback
 import axios from 'axios';
 import './VerifyPage.css';
 
@@ -6,9 +6,8 @@ const VerifyPage = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [displayMode] = useState('all'); // 'all', 'waiting', or 'history'
+  const [displayMode] = useState('all'); 
 
-  // Modal State
   const [modal, setModal] = useState({
     isOpen: false,
     message: '',
@@ -16,18 +15,14 @@ const VerifyPage = () => {
     id: null
   });
 
+  // แก้ไขจุด Conflict ตรงนี้แล้ว
   const BASE_URL = "https://finalrental.onrender.com";
-  const API_URL = `${BASE_URL}/api/admin/kyc`;
+  const API_URL = `${BASE_URL}/api/admin/kyc`; 
 
-  useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Separate Loading logic
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-  const fetchData = async () => {
+  // ใช้ useCallback หุ้มฟังก์ชันเพื่อให้ Warning ใน useEffect หายไปอย่างถูกต้อง
+  const fetchData = useCallback(async () => {
     try {
       if (isFirstLoad) setLoading(true);
       const token = localStorage.getItem('token');
@@ -54,7 +49,6 @@ const VerifyPage = () => {
         if (u.id) {
           const status = (u.kyc_status || '').toLowerCase();
           if (status !== 'not_submitted' && status !== '') {
-            // Merge data so we don't lose images if one endpoint has more info than another
             const existing = uniqueMap.get(u.id) || {};
             uniqueMap.set(u.id, { ...existing, ...u });
           }
@@ -76,7 +70,11 @@ const VerifyPage = () => {
       setLoading(false);
       setIsFirstLoad(false);
     }
-  };
+  }, [API_URL, BASE_URL, isFirstLoad]); // dependency สำหรับ useCallback
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]); // ใส่ fetchData เข้าไปตามที่ React แนะนำ
 
   const getImageUrl = (path) => {
     if (!path) return 'https://via.placeholder.com/400x250?text=No+Image';
@@ -220,10 +218,3 @@ const VerifyPage = () => {
 };
 
 export default VerifyPage;
-
-
-
-
-
-
-
