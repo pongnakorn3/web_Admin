@@ -1,11 +1,10 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import VerifyPage from './VerifyPage';
 import DisputePage from './DisputePage';
-import SlipVerificationPage from './SlipVerificationPage';
-import WithdrawRequestPage from './WithdrawRequestPage';
 import MemberPage from './MemberPage';
+import SlipVerificationPage from './SlipVerificationPage';
+import VerifyPage from './VerifyPage';
+import WithdrawRequestPage from './WithdrawRequestPage';
 
 const AdminDashboard = () => {
   return (
@@ -19,7 +18,8 @@ const AdminDashboard = () => {
           <Route path="members" element={<MemberPage />} />
           <Route path="slips" element={<SlipVerificationPage />} />
           <Route path="withdraw" element={<WithdrawRequestPage />} />
-          {/* ถ้ามีหน้าอื่นๆ เพิ่มเติม ใส่ Route ตรงนี้ได้เลย */}
+          <Route path="disputes" element={<DisputePage />} />
+
         </Routes>
       </div>
     </div>

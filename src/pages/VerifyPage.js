@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react'; // เพิ่ม useCallback
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './VerifyPage.css';
+import API_BASE_URL from '../configs/api'; // ใช้ตัวนี้เป็นหลักตามมาตรฐานโปรเจกต์คุณ
 
 const VerifyPage = () => {
   const [allUsers, setAllUsers] = useState([]);
@@ -15,13 +16,12 @@ const VerifyPage = () => {
     id: null
   });
 
-  // แก้ไขจุด Conflict ตรงนี้แล้ว
+  // กำหนด URL ให้ถูกต้องและไม่มีตัวแปรซ้ำซ้อน
   const BASE_URL = "https://finalrental.onrender.com";
-  const API_URL = `${BASE_URL}/api/admin/kyc`; 
+  const API_URL = `${API_BASE_URL}/admin/kyc`; 
 
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-  // ใช้ useCallback หุ้มฟังก์ชันเพื่อให้ Warning ใน useEffect หายไปอย่างถูกต้อง
   const fetchData = useCallback(async () => {
     try {
       if (isFirstLoad) setLoading(true);
@@ -70,11 +70,11 @@ const VerifyPage = () => {
       setLoading(false);
       setIsFirstLoad(false);
     }
-  }, [API_URL, BASE_URL, isFirstLoad]); // dependency สำหรับ useCallback
+  }, [API_URL, BASE_URL, isFirstLoad]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]); // ใส่ fetchData เข้าไปตามที่ React แนะนำ
+  }, [fetchData]);
 
   const getImageUrl = (path) => {
     if (!path) return 'https://via.placeholder.com/400x250?text=No+Image';

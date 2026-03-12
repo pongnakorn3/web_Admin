@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import API_BASE_URL from '../configs/api';
 
 const WithdrawRequestPage = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_URL = "https://finalrental.onrender.com/api/money"; // อ้างอิงจาก router
+  const API_URL = `${API_BASE_URL}/money`;
+
 
   useEffect(() => {
     fetchWithdrawRequests();
