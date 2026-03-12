@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import API_BASE_URL from '../configs/api';
 import './AdminTransactionPage.css';
+
 
 const AdminTransactionPage = () => {
   const [logs, setLogs] = useState([]);
@@ -19,9 +21,10 @@ const AdminTransactionPage = () => {
           setLoading(false);
           return;
         }
-        const res = await axios.get('https://finalrental.onrender.com/api/admin/transactions', {
+        const res = await axios.get(`${API_BASE_URL}/admin/transactions`, {
           headers: { Authorization: `Bearer ${token}` }
         });
+
         setLogs(res.data || []);
       } catch (err) {
         console.error('ข้อผิดพลาด:', err);

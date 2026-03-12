@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './VerifyPage.css';
+import { useEffect, useState } from 'react';
+import API_BASE_URL from '../configs/api';
 
 const VerifyPage = () => {
   const [allUsers, setAllUsers] = useState([]);
@@ -18,6 +19,8 @@ const VerifyPage = () => {
 
   const BASE_URL = "https://finalrental.onrender.com";
   const API_URL = `${BASE_URL}/api/admin/kyc`;
+  const API_URL = `${API_BASE_URL}/admin/kyc`;
+
 
   useEffect(() => {
     fetchData();
