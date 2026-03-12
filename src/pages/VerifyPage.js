@@ -1,107 +1,232 @@
 import axios from 'axios';
+import './VerifyPage.css';
 import { useEffect, useState } from 'react';
 import API_BASE_URL from '../configs/api';
 
 const VerifyPage = () => {
-  const [pendingUsers, setPendingUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [displayMode] = useState('all'); // 'all', 'waiting', or 'history'
+
+  // Modal State
+  const [modal, setModal] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+    id: null
+  });
+
+  const BASE_URL = "https://finalrental.onrender.com";
+  const API_URL = `${BASE_URL}/api/admin/kyc`;
   const API_URL = `${API_BASE_URL}/admin/kyc`;
 
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Separate Loading logic
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const fetchData = async () => {
     try {
+      if (isFirstLoad) setLoading(true);
       const token = localStorage.getItem('token');
-      // เรียกใช้ viewPendingKYC (GET /kyc/pending)
-      const res = await axios.get(`${API_URL}/pending`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      // ใน Controller คุณส่ง success: true, pending_users: [...]
-      if (res.data.success) {
-        setPendingUsers(res.data.pending_users);
+      
+      const tryEndpoints = [
+        `${API_URL}/all`,
+        `${BASE_URL}/api/admin/users`,
+        `${API_URL}/pending`
+      ];
+
+      let combinedData = [];
+      for (const url of tryEndpoints) {
+        try {
+          const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
+          if (res.data.success) {
+            const list = res.data.data || res.data.users || res.data.pending_users || [];
+            combinedData = [...combinedData, ...list];
+          }
+        } catch (e) {}
       }
+
+      const uniqueMap = new Map();
+      combinedData.forEach(u => {
+        if (u.id) {
+          const status = (u.kyc_status || '').toLowerCase();
+          if (status !== 'not_submitted' && status !== '') {
+            // Merge data so we don't lose images if one endpoint has more info than another
+            const existing = uniqueMap.get(u.id) || {};
+            uniqueMap.set(u.id, { ...existing, ...u });
+          }
+        }
+      });
+
+      const statusPriority = { 'pending': 1, 'approved': 2, 'rejected': 3 };
+      const sorted = Array.from(uniqueMap.values()).sort((a, b) => {
+        const pA = statusPriority[(a.kyc_status || '').toLowerCase()] || 4;
+        const pB = statusPriority[(b.kyc_status || '').toLowerCase()] || 4;
+        if (pA !== pB) return pA - pB;
+        return (Number(b.id) || 0) - (Number(a.id) || 0);
+      });
+
+      setAllUsers(sorted);
     } catch (err) {
       console.error("Fetch Error:", err);
     } finally {
       setLoading(false);
+      setIsFirstLoad(false);
     }
   };
 
-  const handleDecision = async (id, decision) => {
-    const confirmText = decision === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ';
-    if (!window.confirm(`ยืนยันการ${confirmText}?`)) return;
+  const getImageUrl = (path) => {
+    if (!path) return 'https://via.placeholder.com/400x250?text=No+Image';
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${BASE_URL}${cleanPath}`;
+  };
 
+  const openConfirmModal = (id, decision) => {
+    setModal({
+      isOpen: true,
+      message: `ยืนยันการ${decision === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ'}`,
+      type: decision,
+      id: id
+    });
+  };
+
+  const handleConfirmDecision = async () => {
+    const { id, type } = modal;
+    setModal({ ...modal, isOpen: false });
     try {
       const token = localStorage.getItem('token');
-      // เรียกใช้ approveRejectKYC (PUT /kyc/:id)
-      const res = await axios.put(`${API_URL}/${id}`, 
-        { status: decision }, // Controller รับ status จาก req.body
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
+      const res = await axios.put(`${API_URL}/${id}`, { status: type }, { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.success) {
         alert(res.data.message);
-        fetchData(); // รีโหลดตาราง
+        setSelectedUser(null);
+        fetchData();
       }
     } catch (err) {
-      alert("ดำเนินการไม่สำเร็จ: " + (err.response?.data?.message || err.message));
+      alert("ไม่สำเร็จ: " + (err.response?.data?.message || err.message));
     }
   };
 
-  if (loading) return <div style={{ padding: '20px' }}>กำลังดึงข้อมูล...</div>;
+  const ConfirmationModalComp = () => (
+    <div className={`modal-overlay ${modal.isOpen ? 'active' : ''}`}>
+      <div className="modal-content">
+        <h3>แจ้งเตือน</h3>
+        <p>{modal.message}</p>
+        <div className="modal-actions">
+          <button className="btn-cancel" onClick={() => setModal({ ...modal, isOpen: false })}>ยกเลิก</button>
+          <button className="btn-confirm" onClick={handleConfirmDecision}>ยืนยัน</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (loading && isFirstLoad && !selectedUser) return <div className="loading-state">กำลังดึงข้อมูล...</div>;
+
+  if (selectedUser) {
+    const idCardImg = selectedUser.id_card_image;
+    const faceImg = selectedUser.face_image;
+    return (
+      <div className="verify-container">
+        <ConfirmationModalComp />
+        <div className="detail-card">
+          <button className="back-btn" onClick={() => setSelectedUser(null)}>‹</button>
+          <div className="detail-images">
+            <div className="image-box">
+              <img src={getImageUrl(idCardImg)} alt="ID" onError={(e) => {
+                if (!e.target.src.includes('via.placeholder')) {
+                  e.target.src = 'https://via.placeholder.com/400x250?text=ID+Not+Found';
+                }
+              }} />
+            </div>
+            <div className="image-box">
+              <img src={getImageUrl(faceImg)} alt="Face" onError={(e) => {
+                if (!e.target.src.includes('via.placeholder')) {
+                  e.target.src = 'https://via.placeholder.com/400x250?text=Face+Not+Found';
+                }
+              }} />
+            </div>
+          </div>
+          <div className="detail-info">
+            <h2>ชื่อ {selectedUser.full_name}</h2>
+            <p>เลขบัตร {selectedUser.id_card_number || '-'}</p>
+            <p>สถานะปัจจุบัน: <span style={{ color: selectedUser.kyc_status === 'approved' ? '#1e9a74' : selectedUser.kyc_status === 'rejected' ? '#d14545' : '#38bdf8' }}>{selectedUser.kyc_status}</span></p>
+          </div>
+          {selectedUser.kyc_status === 'pending' && (
+            <div className="detail-actions">
+              <button className="btn-detail-approve" onClick={() => openConfirmModal(selectedUser.id, 'approved')}>อนุมัติ</button>
+              <button className="btn-detail-reject" onClick={() => openConfirmModal(selectedUser.id, 'rejected')}>ปฏิเสธ</button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const waitingList = allUsers.filter(u => (u.kyc_status || '').toLowerCase() === 'pending');
+  const historyList = allUsers.filter(u => (u.kyc_status || '').toLowerCase() === 'approved' || (u.kyc_status || '').toLowerCase() === 'rejected');
+
+  let currentList = allUsers;
+  if (displayMode === 'waiting') currentList = waitingList;
+  else if (displayMode === 'history') currentList = historyList;
 
   return (
     <div className="verify-container">
-      <h1>การอนุมัติยืนยันตัวตน</h1>
-      <div className="table-card" style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-        <table width="100%" style={{ borderCollapse: 'collapse' }}>
+      <div className="table-card">
+        <table className="verify-table" style={{ tableLayout: 'fixed' }}>
           <thead>
-            <tr style={{ textAlign: 'left', borderBottom: '2px solid #f0f0f0' }}>
-              <th style={{ padding: '12px' }}>รูปบัตรประชาชน</th>
-              <th>ชื่อ-นามสกุล</th>
-              <th>เลขบัตร</th>
-              <th>การจัดการ</th>
+            <tr>
+              <th style={{ width: '150px' }}>รูปภาพ</th>
+              <th style={{ width: '30%' }}>ชื่อ</th>
+              <th style={{ width: '30%' }}>เลขบัตร</th>
+              <th style={{ textAlign: 'right', width: '25%' }}>การจัดการ</th>
             </tr>
           </thead>
-          <tbody>
-            {pendingUsers.length > 0 ? pendingUsers.map(user => (
-              <tr key={user.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                <td style={{ padding: '12px' }}>
-                  <img 
-                    src={user.id_card_image} 
-                    alt="ID Card" 
-                    style={{ width: '100px', height: '60px', borderRadius: '4px', objectFit: 'cover', border: '1px solid #ddd' }}
-                    onError={(e) => e.target.src = 'https://via.placeholder.com/100x60?text=No+Image'}
-                  />
-                </td>
-                <td><strong>{user.full_name}</strong><br/><small>{user.email}</small></td>
-                <td>{user.id_card_number}</td>
-                <td>
-                  <button 
-                    onClick={() => handleDecision(user.id, 'approved')}
-                    style={{ background: '#22c55e', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
-                  >
-                    อนุมัติ
-                  </button>
-                  <button 
-                    onClick={() => handleDecision(user.id, 'rejected')}
-                    style={{ background: '#ef4444', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
-                  >
-                    ปฏิเสธ
-                  </button>
-                </td>
-              </tr>
-            )) : (
-              <tr><td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: '#666' }}>ไม่มีผู้ใช้งานที่รอการตรวจสอบ (Pending)</td></tr>
-            )}
-          </tbody>
         </table>
+        <div className="table-content-area">
+          <table className="verify-table" style={{ tableLayout: 'fixed' }}>
+            <tbody>
+              {currentList.length > 0 ? currentList.map((user) => (
+                <tr key={user.id}>
+                  <td style={{ width: '150px' }}>
+                    <img src={getImageUrl(user.id_card_image)} alt="ID" className="id-card-img" onError={(e) => {
+                      if (!e.target.src.includes('via.placeholder')) {
+                        e.target.src = 'https://via.placeholder.com/110x70?text=No+Img';
+                      }
+                    }} />
+                  </td>
+                  <td style={{ width: '30%' }}><strong>{user.full_name || '-'}</strong></td>
+                  <td style={{ width: '30%' }}>{user.id_card_number || '-'}</td>
+                  <td style={{ textAlign: 'right', width: '25%' }}>
+                    <div className="action-buttons" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <button className={`btn-action ${(user.kyc_status || '').toLowerCase() === 'rejected' ? 'btn-reject' : 'btn-view'}`} onClick={() => setSelectedUser(user)}>
+                        {(user.kyc_status || '').toLowerCase() === 'pending' ? 'เข้าดู' : (user.kyc_status || '').toLowerCase() === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ'}
+                        <span className="arrow-icon">›</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )) : (
+                <tr><td colSpan="4" className="no-data">ไม่มีข้อมูลในส่วนนี้</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 };
 
 export default VerifyPage;
+
+
+
+
+
+
+
