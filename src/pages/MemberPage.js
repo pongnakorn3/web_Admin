@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { BsChevronRight } from "react-icons/bs"; 
 import API_BASE_URL from '../configs/api';
+import './MemberPage.css'; 
 
 const MemberPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const API_URL = `${API_BASE_URL}/admin/users`;
-
 
   useEffect(() => {
     fetchData();
@@ -28,33 +29,55 @@ const MemberPage = () => {
     }
   };
 
-  if (loading) return <div style={{ padding: '20px' }}>กำลังดึงข้อมูลสมาชิก...</div>;
+  if (loading) return <div className="loading-state">กำลังดึงข้อมูลสมาชิก...</div>;
 
   return (
-    <div className="verify-container">
-      <h1>จัดการสมาชิกทั้งหมด</h1>
-      <div className="table-card" style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-        <table width="100%" style={{ borderCollapse: 'collapse' }}>
+    <div className="member-page-container">
+      
+      <div className="search-section">
+        <input 
+          type="text" 
+          placeholder="ค้นหาชื่อผู้ใช้" 
+          className="search-input"
+        />
+        <button className="search-btn">ค้นหา</button>
+      </div>
+
+      <div className="table-card">
+        <table className="member-table">
           <thead>
-            <tr style={{ textAlign: 'left', borderBottom: '2px solid #f0f0f0' }}>
-              <th style={{ padding: '12px' }}>ID</th>
-              <th>ชื่อ-นามสกุล</th>
+            <tr>
+              <th>ชื่อ</th>
               <th>อีเมล</th>
-              <th>สถานะ KYC</th>
-              <th>บทบาท</th>
+              <th>หมายเหตุ (สถานะ)</th>
+              <th>จัดการ</th>
             </tr>
           </thead>
           <tbody>
             {users.length > 0 ? users.map(user => (
-              <tr key={user.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                <td style={{ padding: '12px' }}>{user.id}</td>
-                <td><strong>{user.full_name}</strong></td>
-                <td>{user.email}</td>
-                <td>{user.kyc_status}</td>
-                <td>{user.role}</td>
+              <tr key={user.id}>
+                <td>
+                  <div className="user-info-cell">
+                    <div className="user-avatar-placeholder"></div>
+                    <span>{user.full_name}</span>
+                  </div>
+                </td>
+                <td>
+                  <span className="email-text">{user.email}</span>
+                </td>
+                <td className="note-text">
+                  {user.kyc_status} ({user.role})
+                </td>
+                <td>
+                  <button className="suspend-btn">
+                    ถูกระงับ <BsChevronRight className="chevron-icon" />
+                  </button>
+                </td>
               </tr>
             )) : (
-              <tr><td colSpan="5" style={{ textAlign: 'center', padding: '40px', color: '#666' }}>ไม่พบข้อมูลสมาชิก</td></tr>
+              <tr>
+                <td colSpan="4" className="empty-state">ไม่พบข้อมูลสมาชิก</td>
+              </tr>
             )}
           </tbody>
         </table>

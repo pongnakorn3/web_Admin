@@ -79,13 +79,13 @@ const WithdrawRequestPage = () => {
                 <td>
                   <button 
                     onClick={() => handleApprove(req.id, 'approved')}
-                    style={{ background: '#22c55e', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
+                    style={{ background: '#199474', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
                   >
                     อนุมัติโอน
                   </button>
                   <button 
                     onClick={() => handleApprove(req.id, 'rejected')}
-                    style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }}
+                    style={{ background: '#CA3A3A', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }}
                   >
                     ปฏิเสธ
                   </button>

@@ -182,6 +182,41 @@ const VerifyPage = () => {
               <th style={{ textAlign: 'right', width: '25%' }}>การจัดการ</th>
             </tr>
           </thead>
+
+          <tbody>
+            {pendingUsers.length > 0 ? pendingUsers.map(user => (
+              <tr key={user.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                <td style={{ padding: '12px' }}>
+                  <img 
+                    src={user.id_card_image} 
+                    alt="ID Card" 
+                    style={{ width: '100px', height: '60px', borderRadius: '4px', objectFit: 'cover', border: '1px solid #ddd' }}
+                    onError={(e) => e.target.src = 'https://via.placeholder.com/100x60?text=No+Image'}
+                  />
+                </td>
+                <td><strong>{user.full_name}</strong><br/><small>{user.email}</small></td>
+                <td>{user.id_card_number}</td>
+                <td>
+                  <button 
+                    onClick={() => handleDecision(user.id, 'approved')}
+                    style={{ background: '#199474', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
+                  >
+                    อนุมัติ
+                  </button>
+                  <button 
+                    onClick={() => handleDecision(user.id, 'rejected')}
+                    style={{ background: '#CA3A3A', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
+                  >
+                    ปฏิเสธ
+                  </button>
+                </td>
+              </tr>
+            )) : (
+              <tr><td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: '#666' }}>ไม่มีผู้ใช้งานที่รอการตรวจสอบ (Pending)</td></tr>
+            )}
+          </tbody>
+
+ main
         </table>
         <div className="table-content-area">
           <table className="verify-table" style={{ tableLayout: 'fixed' }}>

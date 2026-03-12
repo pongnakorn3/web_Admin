@@ -15,7 +15,6 @@
   max-width: 400px;
   text-align: center;
   padding: 20px;
-  /* ลบ background-color, box-shadow, และ border ออกเพื่อให้ Card หายไป */
   background: transparent; 
   box-shadow: none;
   border: none;
