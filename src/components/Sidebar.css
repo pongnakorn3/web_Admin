@@ -1,30 +1,5 @@
-<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
 
-.sidebar{
-  width:260px;
-  height:100vh;
-  background:#3f4c66;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  padding-top:20px;
-  font-family: 'Bai Jamjuree', sans-serif; 
-}
-
-/* profile */
-
-.profile-section{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:22px 20px;
-}
-
-.profile-icon{
-  font-size:60px;   
-  color:white;
-=======
 .sidebar {
   width: 280px;
   min-height: 100vh;
@@ -34,41 +9,22 @@
   flex-direction: column;
   position: relative;
   box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+  font-family: 'Bai Jamjuree', sans-serif;
 }
 
 .profile-section {
   text-align: center;
   padding: 40px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
->>>>>>> main
 }
 
 .admin-name{
-  font-size:22px;   
+  font-size:22px;
   font-weight:500;
-  color:white;      
+  color:white;
   margin:0;
 }
 
-<<<<<<< HEAD
-/* menu */
-
-.menu-list{
-  display:flex;
-  flex-direction:column;
-  margin-top:10px;
-}
-
-.menu-item{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:14px 20px;
-  color:white;
-  text-decoration:none;
-  font-size:15px;
-  transition:0.2s;
-=======
 .menu-item {
   padding: 16px 25px;
   color: #adb5bd;
@@ -88,21 +44,10 @@
   background-color: #1e293b;
   color: white;
   border-left: 4px solid #0ea5e9;
->>>>>>> main
-}
-
-.menu-item:hover{
-  background:rgba(255,255,255,0.08);
 }
 
 .menu-icon{
   font-size:18px;
-}
-
-/* active */
-
-.menu-item.active{
-  background:#0f7a8a;
 }
 
 /* logout */

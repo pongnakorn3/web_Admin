@@ -184,7 +184,7 @@ const VerifyPage = () => {
           </thead>
 
           <tbody>
-            {pendingUsers.length > 0 ? pendingUsers.map(user => (
+            {currentList.length > 0 ? currentList.map(user => (
               <tr key={user.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
                 <td style={{ padding: '12px' }}>
                   <img 
@@ -198,13 +198,13 @@ const VerifyPage = () => {
                 <td>{user.id_card_number}</td>
                 <td>
                   <button 
-                    onClick={() => handleDecision(user.id, 'approved')}
+                    onClick={() => openConfirmModal(user.id, 'approved')}
                     style={{ background: '#199474', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', marginRight: '8px', cursor: 'pointer' }}
                   >
                     อนุมัติ
                   </button>
                   <button 
-                    onClick={() => handleDecision(user.id, 'rejected')}
+                    onClick={() => openConfirmModal(user.id, 'rejected')}
                     style={{ background: '#CA3A3A', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
                   >
                     ปฏิเสธ
