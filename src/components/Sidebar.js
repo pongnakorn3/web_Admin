@@ -6,26 +6,15 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import './Sidebar.css';
 
 const Sidebar = () => {
-
-<<<<<<< HEAD
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogoutClick = () => {
-    setShowLogoutModal(true);
-  };
+  // Logic การ Logout แบบมี Modal ยืนยัน
+  const handleLogoutClick = () => setShowLogoutModal(true);
+  const handleCancelLogout = () => setShowLogoutModal(false);
 
-  const handleCancelLogout = () => {
-    setShowLogoutModal(false);
-  };
-
-  const confirmLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('userRole');
-    navigate('/login');
-=======
-  const handleLogout = async () => {
+  const confirmLogout = async () => {
     setIsLoggingOut(true);
     try {
       localStorage.removeItem('token');
@@ -35,223 +24,79 @@ const Sidebar = () => {
     } catch (error) {
       console.error('ข้อผิดพลาดในการออกจากระบบ:', error);
       setIsLoggingOut(false);
+      setShowLogoutModal(false);
     }
->>>>>>> main
   };
 
+  // รวมไอคอนและเมนูให้เป็นระเบียบ (ใช้ตามเพื่อนแต่เปลี่ยนเป็น Icon สวยๆ ของคุณ)
   const menuItems = [
-    { 
-      path: "/admin/verify", 
-      label: "การอนุมัติยืนยันตัวตน", 
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
-      )
-    },
-    { 
-      path: "/admin/members", 
-      label: "จัดการสมาชิก", 
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      )
-    },
-    { 
-      path: "/admin/disputes", 
-      label: "จัดการข้อพิพาท", 
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      )
-    },
-    { 
-      path: "/admin/slips", 
-      label: "ตรวจสอบสลิป", 
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      )
-    },
-    { 
-      path: "/admin/withdraw", 
-      label: "คำร้องขอถอนเงิน", 
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      )
-    },
+    { path: "/admin/verify", label: "การอนุมัติยืนยันตัวตน", icon: <LuSquareUser /> },
+    { path: "/admin/members", label: "จัดการสมาชิก", icon: <BsTerminal /> },
+    { path: "/admin/disputes", label: "จัดการข้อพิพาท", icon: <IoChatbubbleEllipsesOutline /> },
+    { path: "/admin/slips", label: "ตรวจสอบสลิป", icon: <BsBank2 /> },
+    { path: "/admin/withdraw", label: "คำร้องขอถอนเงิน", icon: <BsReceipt /> },
   ];
 
   return (
-<<<<<<< HEAD
     <>
-      <div className="sidebar">
-
+      <div className="sidebar" style={{ fontFamily: 'Sarabun, sans-serif' }}>
         <div className="profile-section">
           <div className="avatar">
-            <LuCircleUser className="profile-icon" />
+            <LuCircleUser className="profile-icon" style={{ fontSize: '40px' }} />
           </div>
           <h2 className="admin-name">Admin</h2>
         </div>
 
-        <nav className="menu-list">
-
-          <NavLink
-            to="/admin/verify"
-            className={({isActive}) => isActive ? "menu-item active" : "menu-item"}
-          >
-            <LuSquareUser className="menu-icon" />
-            <span>การอนุมัติยืนยันตัวตน</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/members"
-            className={({isActive}) => isActive ? "menu-item active" : "menu-item"}
-          >
-            <BsTerminal className="menu-icon" />
-            <span>จัดการสมาชิก</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/disputes"
-            className={({isActive}) => isActive ? "menu-item active" : "menu-item"}
-          >
-            <IoChatbubbleEllipsesOutline className="menu-icon" />
-            <span>จัดการข้อพิพาท</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/slips"
-            className={({isActive}) => isActive ? "menu-item active" : "menu-item"}
-          >
-            <BsBank2 className="menu-icon" />
-            <span>ตรวจสอบสลิป</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/withdraw"
-            className={({isActive}) => isActive ? "menu-item active" : "menu-item"}
-          >
-            <BsReceipt className="menu-icon" />
-            <span>คำร้องขอถอนเงิน</span>
-          </NavLink>
+        <nav className="menu-list" style={{ padding: '20px 0' }}>
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}
+              style={{ display: 'flex', alignItems: 'center', padding: '12px 25px', gap: '12px', textDecoration: 'none' }}
+            >
+              <span className="menu-icon" style={{ display: 'flex', fontSize: '20px' }}>{item.icon}</span>
+              <span style={{ fontSize: '16px' }}>{item.label}</span>
+            </NavLink>
+          ))}
 
           <button
             className="menu-item logout-btn"
             onClick={handleLogoutClick}
+            disabled={isLoggingOut}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              background: 'transparent',
+              border: 'none',
+              padding: '12px 25px',
+              gap: '12px',
+              cursor: 'pointer',
+              color: 'inherit'
+            }}
           >
-            <BsBoxArrowLeft className="menu-icon" />
-            <span>ออกจากระบบ</span>
+            <BsBoxArrowLeft className="menu-icon" style={{ fontSize: '20px' }} />
+            <span style={{ fontSize: '16px' }}>{isLoggingOut ? 'กำลังออก...' : 'ออกจากระบบ'}</span>
           </button>
-
         </nav>
       </div>
 
+      {/* Logout Modal - ของคุณ (เก็บไว้เพราะมันดี!) */}
       {showLogoutModal && (
         <div className="logout-modal-overlay">
-
           <div className="logout-modal-box">
-
-            <h3 className="logout-modal-title">
-              แจ้งเตือน
-            </h3>
-
-            <p className="logout-modal-desc">
-              คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?
-            </p>
-
+            <h3 className="logout-modal-title">แจ้งเตือน</h3>
+            <p className="logout-modal-desc">คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?</p>
             <div className="logout-modal-actions">
-
-              <button
-                className="logout-modal-btn cancel"
-                onClick={handleCancelLogout}
-              >
-                ยกเลิก
-              </button>
-
-              <button
-                className="logout-modal-btn confirm"
-                onClick={confirmLogout}
-              >
-                ยืนยัน
-              </button>
-
+              <button className="logout-modal-btn cancel" onClick={handleCancelLogout}>ยกเลิก</button>
+              <button className="logout-modal-btn confirm" onClick={confirmLogout}>ยืนยัน</button>
             </div>
-
           </div>
-
         </div>
       )}
     </>
   );
 };
 
-
 export default Sidebar;
-=======
-    <div className="sidebar" style={{ fontFamily: 'Sarabun, sans-serif' }}>
-      <div className="profile-section">
-        <div className="avatar-container" style={{ marginBottom: '15px' }}>
-          <div style={{ 
-            width: '60px', 
-            height: '60px', 
-            borderRadius: '50%', 
-            backgroundColor: '#fff', 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center',
-            margin: '0 auto',
-            fontSize: '30px',
-            color: '#344154',
-            border: '2px solid rgba(255,255,255,0.2)'
-          }}>👤</div>
-        </div>
-        <h2 style={{ fontSize: '22px', fontWeight: 'bold' }}>Admin</h2>
-      </div>
-      
-      <nav className="menu-list" style={{ padding: '20px 0' }}>
-        {menuItems.map((item) => (
-          <NavLink 
-            key={item.path}
-            to={item.path} 
-            className={({isActive}) => isActive ? "menu-item active" : "menu-item"}
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              padding: '12px 25px',
-              gap: '12px'
-            }}
-          >
-            <span className="menu-icon" style={{ display: 'flex' }}>{item.icon}</span>
-            <span style={{ fontSize: '16px' }}>{item.label}</span>
-          </NavLink>
-        ))}
-      </nav>
-      
-      <div style={{ marginTop: 'auto', padding: '20px' }}>
-        <button 
-          className="logout-btn-custom" 
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            gap: '12px',
-            background: 'transparent',
-            border: 'none',
-            color: '#adb5bd',
-            padding: '12px 15px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            transition: 'all 0.3s'
-          }}
-          onMouseOver={(e) => e.currentTarget.style.color = 'white'}
-          onMouseOut={(e) => e.currentTarget.style.color = '#adb5bd'}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          {isLoggingOut ? 'กำลังออก...' : 'ออกจากระบบ'}
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default Sidebar;
->>>>>>> main
